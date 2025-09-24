@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>From Tokens to Terawatt-hours: How AI Uses Energy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1 class="title">From Tokens to Terawatt-hours: How AI Uses Energy</h1>
+            <p class="tagline">AI’s electricity draw comes in two waves—short, intense training and a long, growing tail of inference.</p>
+        </div>
+    </header>
+
+    <main>
+        <!-- Scene 1 -->
+        <section id="scene1" class="section">
+            <div class="container">
+                <h2 class="section-title">Training: short, heavy bursts</h2>
+                <p class="section-subtitle">Big training runs are intense; one run can be a small town’s year of power.</p>
+
+                <div class="scene1-meta">
+                    <div class="meta-item">
+                        <span class="label">Model</span>
+                        <span class="value">Meta Llama-3 405B</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="label">Duration</span>
+                        <span class="value">54 days</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="label">Accelerators</span>
+                        <span class="value">16,384 × NVIDIA H100</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="label">PUE</span>
+                        <span class="value">1.2 (conservative)</span>
+                    </div>
+                </div>
+
+                <div class="controls-row" role="group" aria-label="Power assumption selector">
+                    <div class="toggle">
+                        <input type="checkbox" id="powerToggle" aria-labelledby="powerToggleLabel" />
+                        <label for="powerToggle" class="toggle-switch" aria-hidden="true"></label>
+                        <div id="powerToggleLabel" class="toggle-labels">
+                            <span data-value="350">350 W/GPU</span>
+                            <span data-value="700">700 W/GPU</span>
+                        </div>
+                    </div>
+
+                    <button id="assumptionsBtn" class="btn btn-ghost" aria-haspopup="dialog" aria-controls="assumptionsDialog" aria-expanded="false">Assumptions</button>
+                    <button id="audioToggle" class="btn btn-ghost" aria-pressed="false" aria-label="Toggle generator hum audio">Hum: Off</button>
+                </div>
+
+                <div class="powerbar-card" aria-live="polite">
+                    <div class="powerbar-legend">
+                        <span class="legend-item"><span class="swatch it"></span> IT load</span>
+                        <span class="legend-item"><span class="swatch overhead"></span> Overhead (PUE)</span>
+                    </div>
+                    <div class="powerbar">
+                        <div class="powerbar-it" style="width:0%"></div>
+                        <div class="powerbar-overhead" style="width:0%"></div>
+                    </div>
+                    <div class="powerbar-stats">
+                        <div class="stat">
+                            <div class="stat-label">IT load</div>
+                            <div class="stat-value"><span id="itLoadMw">—</span> MW</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">Facility energy</div>
+                            <div class="stat-value"><span id="facilityEnergyGwh">—</span> GWh</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-label">Homes for a year</div>
+                            <div class="stat-value"><span id="homesYear">—</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <dialog id="assumptionsDialog" class="assumptions" aria-labelledby="assumptionsTitle">
+                    <h3 id="assumptionsTitle">Assumptions & notes</h3>
+                    <ul>
+                        <li>GPUs: 16,384; training duration: 54 days.</li>
+                        <li>Per-GPU average power: 350 W (PCIe TDP) or 700 W (SXM5 commonly cited).</li>
+                        <li>PUE (Power Usage Effectiveness): 1.2 → 20% overhead beyond IT load.</li>
+                        <li>Facility energy = IT energy × PUE; equivalence uses 10,500 kWh/home/year (U.S. average).</li>
+                        <li>These are transparent, illustrative ranges; actual usage varies with utilization and system design.</li>
+                    </ul>
+                    <div class="dialog-actions">
+                        <button id="assumptionsClose" class="btn">Close</button>
+                    </div>
+                </dialog>
+            </div>
+        </section>
+
+        <!-- Scene 2 -->
+        <section id="scene2" class="section alt">
+            <div class="container">
+                <h2 class="section-title">Inference: the long tail that dominates</h2>
+                <p class="section-subtitle">Day-to-day usage (serving prompts) can outweigh training over a model’s life.</p>
+
+                <div class="fact-row">
+                    <div class="fact">
+                        <div class="fact-number">≈60%</div>
+                        <div class="fact-text">of ML energy at large operators is inference</div>
+                    </div>
+                </div>
+
+                <div class="lollipop-card">
+                    <div class="lollipop-axes">
+                        <div class="axis-label">Per-request energy (Wh)</div>
+                    </div>
+                    <div class="lollipop" id="lollipopSearch" data-value="0.3">
+                        <span class="label">Classic web search</span>
+                        <div class="stem"></div>
+                        <div class="head">0.3</div>
+                    </div>
+                    <div class="lollipop" id="lollipopChatGPT" data-value="2.9">
+                        <span class="label">ChatGPT</span>
+                        <div class="stem"></div>
+                        <div class="head">2.9</div>
+                    </div>
+                    <div class="x10-stamp" aria-hidden="true">×10</div>
+                </div>
+
+                <div class="equivalence-tiles">
+                    <div class="tile">
+                        <div class="tile-icon">💡</div>
+                        <div class="tile-body">
+                            <div class="tile-title">One ChatGPT answer</div>
+                            <div class="tile-subtitle">≈ 10 W LED for <span id="ledMinutes">17</span> min</div>
+                        </div>
+                    </div>
+                    <div class="tile">
+                        <div class="tile-icon">🏠</div>
+                        <div class="tile-body">
+                            <div class="tile-title">1,000,000 prompts</div>
+                            <div class="tile-subtitle">≈ <span id="millionPromptsMWh">2.9</span> MWh → ~<span id="millionHomesDay">100</span> homes/day</div>
+                        </div>
+                    </div>
+                </div>
+
+                <details class="calculator" id="calcDrawer">
+                    <summary>Calculator: prompts → energy & homes/day</summary>
+                    <form id="calcForm" class="calc-form" aria-describedby="calcNote">
+                        <label for="promptsPerDay">Prompts per day</label>
+                        <input type="number" id="promptsPerDay" name="promptsPerDay" min="0" step="100" value="100000" />
+
+                        <label for="perPromptWh">Energy per prompt (Wh)</label>
+                        <input type="number" id="perPromptWh" name="perPromptWh" min="0" step="0.1" value="2.9" />
+
+                        <div class="calc-results">
+                            <div>Daily energy: <strong><span id="dailyEnergyKwh">290.0</span> kWh</strong></div>
+                            <div>Equivalent homes/day: <strong><span id="homesPerDay">10.1</span></strong></div>
+                        </div>
+                        <p id="calcNote" class="calc-note">Homes/day uses 10,500 kWh/home/year → 28.77 kWh/home/day.</p>
+                    </form>
+                </details>
+            </div>
+        </section>
+
+        <!-- Sources -->
+        <section id="sources" class="section sources">
+            <div class="container">
+                <h2 class="section-title">Sources</h2>
+                <ul class="sources-list">
+                    <li>Meta Llama-3 405B training details: <a href="https://www.datacenterdynamics.com/en/news/" target="_blank" rel="noopener">Data Center Dynamics</a></li>
+                    <li>GPU power draw: NVIDIA H100 PCIe TDP 350 W; SXM5 commonly cited up to 700 W: <a href="https://resources.nvidia.com/" target="_blank" rel="noopener">NVIDIA resources</a></li>
+                    <li>PUE definition and ranges: <a href="https://www.thegreengrid.org/" target="_blank" rel="noopener">The Green Grid</a></li>
+                    <li>U.S. average residential electricity use: <a href="https://www.eia.gov/tools/faqs/" target="_blank" rel="noopener">U.S. EIA FAQs</a></li>
+                    <li>Inference share and per-request estimates: <a href="https://www.epri.com/" target="_blank" rel="noopener">EPRI</a></li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div>© <span id="year"></span> • Built for clarity and transparency</div>
+            <div class="footer-links">
+                <a href="#scene1">Training</a>
+                <a href="#scene2">Inference</a>
+                <a href="#sources">Sources</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/script.js"></script>
+</body>
+</html>
