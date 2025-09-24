@@ -26,8 +26,8 @@ def create_plot() -> str:
     )
 
     axes.set_title("Data Visualization", fontsize=14)
-    axes.set_xlabel("x", fontsize=12)
-    axes.set_ylabel("y", fontsize=12)
+    axes.set_xlabel("temperature", fontsize=12)
+    axes.set_ylabel("sales", fontsize=12)
     axes.grid(True, linestyle=":", linewidth=0.8, alpha=0.7)
     axes.legend(loc="best")
 
